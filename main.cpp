@@ -114,7 +114,41 @@ void printPath(pair<int,int> exitcell,
 }
 
 // ----------------------------------------------------------
-// STUDENTS IMPLEMENT DFS HERE
+bool dfs(int row, int col,
+         const std::vector<std::vector<int>>& maze,
+         std::vector<std::vector<bool>>& visited,   // changed from 'seen' (like it more conentinal)
+         std::vector<std::vector<int>>& prev_row,   // being more explicit here
+         std::vector<std::vector<int>>& prev_col,
+         int target_row, int target_col)            // expanded the abbreviations
+{
+    // Maze dimensions upfront
+    int rows = maze.size();
+    int cols = maze[0].size();   // assuming maze is nonempty since N, M are from input
+
+    // Boundary check (simpify perchance)
+    if (row < 0 || row >= rows ||
+        col < 0 || col >= cols)
+    {
+        return false;  // out of bounds
+    }
+
+    // Skip walls and already visited cells
+    if (maze[row][col] == 1 || visited[row][col]) {
+        return false;
+    }
+
+    // Mark as visited( doing this early to avoid cycles)
+    visited[row][col] = true;
+
+    // checking if we reached the target
+    if (row == target_row && col == target_col) {
+        return true;   // success!
+    }
+
+
+    return false;   // haven't found the target from here (yet)
+}
+
 // Add arguments, return type, and logic
 // ----------------------------------------------------------
 // bool dfs(……) {
