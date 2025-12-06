@@ -145,9 +145,41 @@ bool dfs(int row, int col,
         return true;   // success!
     }
 
+    // Using dr/dc so I don't have to manually write right/down/left/up every time.
+    for (int dir = 0; dir < 4; ++dir)
+    {
+        int next_row = row + dr[dir];
+        int next_col = col + dc[dir];
 
-    return false;   // haven't found the target from here (yet)
+        if (next_row >= 0 && next_row < rows &&
+            next_col >= 0 && next_col < cols)
+        {
+            //only explore if it's something we can actually walk on
+            if (!visited[next_row][next_col] && maze[next_row][next_col] == 0)
+            {
+                // I know imma forget to set parents before recursing, so doing it early.
+                prev_row[next_row][next_col] = row;   // previous spot for row
+                prev_col[next_row][next_col] = col;
+
+                // Honestly I could inline this call, but assigning it just makes debugging easier
+                bool found_path = dfs(next_row, next_col, maze,
+                                      visited, prev_row, prev_col,
+                                      target_row, target_col);
+
+                if (found_path) {
+                    return true;   // done (well, assuming recursion didn't lie)
+                }
+            }
+            // else: either wall or already visited — skipping silently FOR NOW
+            // std::cout << "Blocked or visited: " << next_row << "," << next_col << std::endl;
+        }
+        // else out of bounds; not logging because it was getting noisy
+    }
+
+    // If we get here, none of the moves worked.
+    return false;   // backtrack a dead end was reached
 }
+
 
 // Add arguments, return type, and logic
 // ----------------------------------------------------------
