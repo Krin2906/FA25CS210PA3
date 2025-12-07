@@ -116,16 +116,16 @@ void printPath(pair<int,int> exitcell,
 // ----------------------------------------------------------
 bool dfs(int row, int col,
          const std::vector<std::vector<int>>& maze,
-         std::vector<std::vector<bool>>& visited,   // changed from 'seen' (like it more conentinal)
-         std::vector<std::vector<int>>& prev_row,   // being more explicit here
+         std::vector<std::vector<bool>>& visited,
+         std::vector<std::vector<int>>& prev_row,
          std::vector<std::vector<int>>& prev_col,
-         int target_row, int target_col)            // expanded the abbreviations
+         int target_row, int target_col)
 {
     // Maze dimensions upfront
     int rows = maze.size();
     int cols = maze[0].size();   // assuming maze is nonempty since N, M are from input
 
-    // Boundary check (simpify perchance)
+    // Boundary check
     if (row < 0 || row >= rows ||
         col < 0 || col >= cols)
     {
@@ -161,7 +161,6 @@ bool dfs(int row, int col,
                 prev_row[next_row][next_col] = row;   // previous spot for row
                 prev_col[next_row][next_col] = col;
 
-                // Honestly I could inline this call, but assigning it just makes debugging easier
                 bool found_path = dfs(next_row, next_col, maze,
                                       visited, prev_row, prev_col,
                                       target_row, target_col);
@@ -170,10 +169,7 @@ bool dfs(int row, int col,
                     return true;   // done (well, assuming recursion didn't lie)
                 }
             }
-            // else: either wall or already visited — skipping silently FOR NOW
-            // std::cout << "Blocked or visited: " << next_row << "," << next_col << std::endl;
         }
-        // else out of bounds; not logging because it was getting noisy
     }
 
     // If we get here, none of the moves worked.
@@ -223,11 +219,8 @@ int main() {
                           parent_r,
                           parent_c,
                           exit_r, exit_c);
-    // in the scenario DFS actually dug up a path, try printing it.
-    //Trying not to mess up order of args in printPath, so imma leave this comment as a reminder.
     if (path_found)
     {
-        // exitcell is presumably (exit_r, exit_c) but im just trusting the variable here.
         printPath(exitcell, parent_r, parent_c, ent_r, ent_c);
         cout << "Path found successfully!" << endl;  // success message
     }
@@ -235,7 +228,6 @@ int main() {
     {
         // First print exactly what the spec expects
         cout << "No path exists." << endl;
-        // then my extra commentary so I don't get in trouble with the autograder.
         cout << "(At least not one *I* could find.)" << endl;
     }
     return 0;
